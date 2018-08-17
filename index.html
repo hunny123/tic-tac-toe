@@ -1,0 +1,385 @@
+<html>
+
+<head>
+  <title>tic toe</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+  <style>
+    td {
+      padding: 10px;
+      border: 2px solid white;
+      height: 50px;
+      width: 50px;
+
+    }
+
+    body {
+      color: white;
+      background: linear-gradient(45deg, rgba(82, 174, 255, 1) 0%, rgba(53, 253, 183, 1) 100%);
+      background-repeat: no-repeat;
+      height: 640px;
+    }
+
+    .jumbotron {
+      background: transparent !important;
+      padding: 50px !important;
+    }
+
+    td {
+      border-top: none;
+      border-left: none;
+    }
+
+    td:last-child {
+      border-right: none;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    #dou {
+      display: none;
+    }
+
+    #dou2 {
+      display: none;
+    }
+
+    .select {
+      display: none;
+    }
+
+    .winner {
+      display: none;
+    }
+
+    .gameboard {
+      padding-top: 0px;
+    }
+
+    .selection {
+      margin-top: 0px;
+    }
+
+    td {
+      font-size: 20px;
+      font-weight: bold;
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <center>
+    <div class="jumbotron">
+
+      <h1> tic tac toe</h1>
+    </div>
+    <div class="selection jumbotron">
+      <h1>Choose the game style</h1>
+      <button class="singleplayer btn btn-primary">Single Player</button>
+      <button class="doubleplayer btn btn-primary">Double Player</button>
+
+    </div>
+
+    <div class="select jumbotron">
+      <h1>select the symbol</h1>
+      <button class="cross btn btn-danger">X</button>
+      <button class="oo btn btn-danger">O</button>
+    </div>
+
+    <div class="gameboard ">
+      <div id="dou" class="jumbotron">
+        <h1>Double Player</h1>
+        <table>
+
+          <tr>
+            <td id="00"></td>
+            <td id="01"></td>
+            <td id="02"></td>
+          </tr>
+          <tr>
+            <td id="10"></td>
+            <td id="11"></td>
+            <td id="12"></td>
+          </tr>
+          <tr>
+            <td id="20"></td>
+            <td id="21"></td>
+            <td id="22"></td>
+          </tr>
+        </table>
+      </div>
+      <div id="dou2" class="jumbotron">
+        <h1>vs computer</h1>
+        <table>
+
+          <tr>
+            <td id="001" class="1"></td>
+            <td id="011" class="2"></td>
+            <td id="021" class="3"></td>
+          </tr>
+          <tr>
+            <td id="101" class="4"></td>
+            <td id="111" class="5"></td>
+            <td id="121" class="6"></td>
+          </tr>
+          <tr>
+            <td id="201" class="7"></td>
+            <td id="211" class="8"></td>
+            <td id="221" class="9"></td>
+          </tr>
+        </table>
+      </div>
+      <div class="winner">
+        <h1>End of the game</h1>
+        <a target="-blank" href="https://codepen.io/webster123/full/zjKKBw/" class="btn btn-success" role="button">Play again</a>
+      </div>
+  </center>
+  <script>
+    /*
+    var k=[[0,1,2]
+           ,[3,4,5]
+           ,[6,7,8]];
+           for(var j in k){
+    	for (var i in k[ ){
+    		if(i===j){
+    		console.log(k[i][j])}
+           }
+    	}
+    	i=2;
+    	j=2;
+    	for(i>=0;i--)
+    	{
+    	for()
+    	}
+
+
+
+    */
+    $(document).ready(function() {
+      var b, c, e;
+      var winner = false;
+      var sp;
+      var common = [
+        ["#", "#", "#"],
+        ["#", "#", "#"],
+        ["#", "#", "#"]
+      ];
+      var counter = 1;
+      var symbol1 = "";
+      var symbol2 = "";
+      $(".singleplayer").click(function() {
+        sp = true;
+        $(".selection").hide();
+        $(".select").show();
+        console.log(sp);
+      })
+      $(".doubleplayer").click(function() {
+        sp = false;
+        $(".selection").hide();
+        $(".select").show();
+        console.log(sp);
+      })
+      $(".cross").click(function() {
+        symbol1 = "X";
+        symbol2 = "O";
+        $(".select").hide();
+        if (sp) {
+          $("#dou2").show();
+        } else {
+          $("#dou").show();
+        }
+        console.log(symbol1 + symbol2);
+      });
+      $(".oo").click(function() {
+        symbol1 = "O";
+        symbol2 = "X";
+        if (sp) {
+          $("#dou2").show();
+        } else {
+          $("#dou").show();
+        }
+        $(".select").hide();
+      });
+      $("#dou td").click(function() {
+        var k;
+        if (counter % 2 == 0) {
+          k = symbol2;
+        } else {
+          k = symbol1;
+        }
+        var id = $(this).attr("id");
+        $(this).html(k);
+        $(this).off("click");
+        common[parseInt(id[0])][parseInt(id[1])] = k;
+        counter++;
+        gameon();
+      });
+
+      function gameon() {
+        var a, b, c, d;
+        for (var i = 0; i < 3; i++) {
+          a = row(i);
+          b = col(i);
+          c = across();
+          d = opacross();
+          if (a === "X" || a === "O") {
+            alert(a + "wins");
+            winner = true;
+            reset()
+            break;
+          } else if (b === "X" || b === "O") {
+            alert(b + "wins");
+            winner = true;
+            reset()
+            break;
+          } else if (c === "X" || c === "O") {
+            alert(c + "wins");
+            winner = true;
+            reset()
+            break;
+          } else if (d === "X" || d === "O") {
+            alert(d + "wins");
+            winner = true;
+            reset()
+            break;
+          } else {
+            a = "";
+            b = "";
+            c = "";
+            d = "";
+          }
+        }
+        checkfordraw();
+      };
+
+      function row(i) {
+        if (common[i][0] != "#" && common[i][0] === common[i][1] && common[i][1] === common[i][2]) {
+          return common[i][0];
+        } else {
+          return "nt";
+        }
+      };
+
+      function col(i) {
+        if (common[0][i] != "#" && common[0][i] === common[1][i] && common[1][i] === common[2][i]) {
+          return common[0][i];
+        } else {
+          return "nt";
+        }
+      };
+
+      function across() {
+        if (common[0][0] != "#" && common[0][0] === common[1][1] && common[1][1] === common[2][2]) {
+          console.log("win");
+          return common[0][0];
+        } else {
+          return "nt";
+        }
+      };
+
+      function opacross() {
+        if (common[0][2] != "#" && common[0][2] === common[1][1] && common[1][1] === common[2][0]) {
+          console.log("win");
+          return common[0][2];
+        } else {
+          return "nt";
+        }
+      };
+      $("#dou2 td").click(function() {
+          if (counter % 2 != 0) {
+            var id = $(this).attr("id");
+            $(this).html(symbol1);
+            $(this).off("click");
+            common[parseInt(id[0])][parseInt(id[1])] = symbol1;
+            counter++;
+            gameon();
+            console.log(counter);
+            if (counter < 10 && winner == false) {
+              setTimeout(ai, 200);
+            }
+          }
+        }
+      );
+
+      function ai(coy) {
+        var a = random()
+        if ($("." + a).html() == "") {
+          $("." + a).html(symbol2);
+          $("." + a).off("click");
+          var id = $("." + a).attr("id");
+          common[parseInt(id[0])][parseInt(id[1])] = symbol2;
+          gameon();
+          counter++;
+          if (counter == 10 && winner == false) {
+            alert("match draw");
+            reset();
+          }
+        } else {
+          if (counter < 10 && winner == false) {
+            ai();
+          }
+        }
+        /*counter++;
+        if(common[1][1]=="#"){
+        	common[1][1]=symbol2;
+        	$("#111").html(symbol2);
+        	$("#111").off("html");
+        	
+        	
+        }
+        checkrow();*/
+      };
+
+      function random() {
+        return Math.floor(Math.random() * 9 + 1);
+      };
+
+      function checkfordraw() {
+        if (counter == 10 && winner == false) {
+          alert("matchdraw");
+          reset();
+          return 0;
+        }
+      };
+
+      function reset() {
+        $("table").html("");
+        $("table,#dou ,#dou2").hide();
+        /*winner=false;
+    
+    counter=1;
+    symbol1=""
+    symbol2=""
+    common =[["#","#","#"],["#","#","#"],["#","#","#"]];
+    */
+        $(".winner").show();
+      }
+      /*function checkrow(){
+      	for(var i in common){
+      		if(common[i][0]===common[i][1] || common[i][1]===common[i][2]||common[i][0]===common[i][2] ){
+                  var t ;
+                  if(jQuery.inArray(common[i],"#")>-1){
+                  	t=jQuery.inArray(common[i],"#");
+                  }
+                  console.log(t);
+
+      		}
+      		
+      	}
+      }*/
+    });
+  </script>
+</body>
+
+</html>
